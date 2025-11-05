@@ -470,6 +470,7 @@ function createStoryElement(story) {
 // Update category tab switching
 document.addEventListener('DOMContentLoaded', function() {
     initInfiniteScroll();
+    initImageModal();
     
     const categoryTabs = document.querySelectorAll('.category-tab');
     categoryTabs.forEach(tab => {
@@ -485,6 +486,108 @@ document.addEventListener('DOMContentLoaded', function() {
             loadMoreStories();
         });
     });
+});
+
+// SIMPLE BUT WORKING MODAL SYSTEM
+let isModalOpen = false;
+
+function initImageModal() {
+    console.log('🔄 Initializing modal system...');
+    
+    // Direct event delegation untuk semua
+    document.addEventListener('click', function(e) {
+        // Click story image - OPEN
+        if (e.target.closest('.story-image-side')) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const img = e.target.closest('.story-image-side').querySelector('img');
+            if (img && img.src) {
+                console.log('📸 Opening modal for:', img.src);
+                openImageModal(img.src);
+            }
+            return;
+        }
+        
+        // Click close button - CLOSE
+        if (e.target.classList.contains('image-modal-close') || 
+            e.target.closest('.image-modal-close')) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('❌ Close button clicked');
+            closeImageModal();
+            return;
+        }
+        
+        // Click outside modal - CLOSE
+        if (isModalOpen && e.target.id === 'imageModal') {
+            console.log('🎯 Clicked outside modal');
+            closeImageModal();
+            return;
+        }
+    });
+    
+    // ESC key untuk close
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && isModalOpen) {
+            console.log('⌨️ ESC key pressed');
+            closeImageModal();
+        }
+    });
+    
+    console.log('✅ Modal system initialized');
+}
+
+function openImageModal(imageSrc) {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    
+    if (!modal || !modalImg) {
+        console.error('❌ Modal elements not found');
+        return;
+    }
+    
+    // Set image
+    modalImg.src = imageSrc;
+    modalImg.alt = 'Story Image';
+    
+    // Show modal
+    modal.style.display = 'flex';
+    isModalOpen = true;
+    
+    // Lock body scroll
+    document.body.style.overflow = 'hidden';
+    
+    console.log('✅ Modal opened');
+}
+
+function closeImageModal() {
+    const modal = document.getElementById('imageModal');
+    
+    if (!modal) {
+        console.error('❌ Modal not found for closing');
+        return;
+    }
+    
+    // Hide modal
+    modal.style.display = 'none';
+    isModalOpen = false;
+    
+    // Restore body scroll
+    document.body.style.overflow = 'auto';
+    
+    console.log('✅ Modal closed');
+}
+
+// Remove any existing modal initialization and replace with this
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 DOM loaded - starting modal system');
+    initImageModal();
+    
+    // Test: cek apakah modal elements ada
+    console.log('Modal element:', document.getElementById('imageModal'));
+    console.log('Modal image:', document.getElementById('modalImage'));
+    console.log('Close button:', document.querySelector('.image-modal-close'));
 });
 
 // Debug function to check if JavaScript is working

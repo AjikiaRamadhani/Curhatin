@@ -1965,3 +1965,229 @@ body {
     background-color: var(--surface-color);
     border-radius: 8px;
 }
+
+/* Story Content - SIMPLE VERSION */
+.story-content {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    flex-grow: 1;
+    /* Biarkan natural flow, grid akan handle height consistency */
+}
+
+/* New Story Card Layout - Image beside text */
+.story-card {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+    display: flex;
+    gap: 16px;
+    cursor: pointer;
+    margin-bottom: 0;
+}
+
+.story-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-color);
+}
+
+/* Story Image - Small size beside content */
+.story-image-side {
+    flex-shrink: 0;
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: var(--surface-color);
+    position: relative;
+}
+
+.story-image-side img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.story-image-side .image-overlay {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.7rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.story-image-side:hover .image-overlay {
+    opacity: 1;
+}
+
+/* Story Content - Takes remaining space */
+.story-content-side {
+    flex: 1;
+    min-width: 0; /* Important for text truncation */
+}
+
+.story-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.story-author {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.author-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.story-time {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+/* Story Text with proper truncation */
+.story-text {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    
+    /* Text truncation for 3 lines */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Story Actions */
+.story-actions-side {
+    display: flex;
+    gap: 16px;
+}
+
+.action-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.action-item .fas {
+    font-size: 0.8rem;
+}
+
+/* For stories without images */
+.story-card.no-image {
+    padding: 16px;
+}
+
+.story-card.no-image .story-content-side {
+    margin-left: 0;
+}
+
+/* Delete button positioning */
+.delete-form {
+    margin: 0;
+}
+
+.btn-delete {
+    background: none;
+    border: none;
+    color: var(--error-color);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.btn-delete:hover {
+    background-color: var(--surface-color);
+}
+
+/* Grid layout adjustment */
+.stories-container-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+/* SIMPLE BUT WORKING MODAL */
+#imageModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+#modalImage {
+    max-width: 90%;
+    max-height: 80%;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 3px solid rgba(255, 255, 255, 0.2);
+}
+
+.image-modal-close {
+    position: fixed;
+    top: 20px;
+    right: 30px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 2.5rem;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.image-modal-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+    color: #ff6b6b;
+}
+
+/* Pastikan body tidak scroll ketika modal open */
+body.modal-open {
+    overflow: hidden;
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
