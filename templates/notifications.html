@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="notifications-header">
+        <h1>Notifikasi</h1>
+        {% if notifications %}
+        <form action="{{ url_for('clear_notifications') }}" method="POST" class="clear-notifications-form">
+            <button type="submit" class="btn btn-secondary" onclick="return confirm('Hapus semua notifikasi?')">
+                <i class="fas fa-trash"></i> Hapus Semua
+            </button>
+        </form>
+        {% endif %}
+    </div>
+
+    <div class="notifications-list">
+        {% if notifications %}
+            {% for notification in notifications %}
+            <div class="notification-item {% if not notification.is_read %}unread{% endif %}">
+                <div class="notification-icon">
+                    {% if notification.type == 'story_like' %}
+                    <i class="fas fa-heart"></i>
+                    {% elif notification.type == 'new_comment' %}
+                    <i class="fas fa-comment"></i>
+                    {% elif notification.type == 'reply' %}
+                    <i class="fas fa-reply"></i>
+                    {% elif notification.type == 'comment_like' %}
+                    <i class="fas fa-heart"></i>
+                    {% else %}
+                    <i class="fas fa-bell"></i>
+                    {% endif %}
+                </div>
+                <div class="notification-content">
+                    <p class="notification-message">{{ notification.message }}</p>
+                    <span class="notification-time">{{ notification.created_at.strftime('%d %b %Y %H:%M') }}</span>
+                </div>
+                <div class="notification-actions">
+                    {% if notification.story_id %}
+                    <a href="{{ url_for('story_detail', story_id=notification.story_id) }}" class="btn btn-sm btn-primary">
+                        Lihat
+                    </a>
+                    {% endif %}
+                    <form action="{{ url_for('delete_notification', notification_id=notification.id) }}" method="POST" class="delete-notification-form">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Hapus notifikasi ini?')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-bell-slash"></i>
+                <h3>Tidak ada notifikasi</h3>
+                <p>Notifikasi akan muncul ketika ada yang menyukai atau mengomentari curhatan Anda</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

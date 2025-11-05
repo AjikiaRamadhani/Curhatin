@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="search-header">
+        <h1>
+            {% if query %}
+                Hasil Pencarian untuk "{{ query }}"
+            {% else %}
+                Cari Curhatan
+            {% endif %}
+        </h1>
+        
+        <form class="search-form" method="GET" action="{{ url_for('search_stories') }}">
+            <div class="search-input-group">
+                <input type="text" name="q" value="{{ query }}" placeholder="Ketik kata kunci..." class="search-input">
+                <button type="submit" class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </form>
+        
+        {% if query and stories %}
+            <p class="search-results-count">
+                Ditemukan <strong>{{ stories.total }}</strong> curhatan untuk "{{ query }}"
+            </p>
+        {% endif %}
+    </div>
+
+    {% if query %}
+        {% if stories and stories.items %}
+            <div class="stories-container">
+                <div class="stories-container-grid">
+                    {% for story in stories.items %}
+                        {% include 'components/story_card.html' %}
+                    {% endfor %}
+                </div>
+                
+                <!-- Pagination untuk Search -->
+                {% if stories.pages > 1 %}
+                <div class="pagination-container">
+                    <div class="pagination">
+                        {% if stories.has_prev %}
+                        <a href="{{ url_for('search_stories', q=query, page=stories.prev_num) }}" class="pagination-btn">
+                            <i class="fas fa-chevron-left"></i> Sebelumnya
+                        </a>
+                        {% else %}
+                        <span class="pagination-btn disabled">
+                            <i class="fas fa-chevron-left"></i> Sebelumnya
+                        </span>
+                        {% endif %}
+                        
+                        <div class="pagination-pages">
+                            {% for page_num in stories.iter_pages(left_edge=2, left_current=2, right_current=2, right_edge=2) %}
+                                {% if page_num %}
+                                    {% if page_num == stories.page %}
+                                    <span class="pagination-page active">{{ page_num }}</span>
+                                    {% else %}
+                                    <a href="{{ url_for('search_stories', q=query, page=page_num) }}" class="pagination-page">{{ page_num }}</a>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="pagination-ellipsis">...</span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        
+                        {% if stories.has_next %}
+                        <a href="{{ url_for('search_stories', q=query, page=stories.next_num) }}" class="pagination-btn">
+                            Selanjutnya <i class="fas fa-chevron-right"></i>
+                        </a>
+                        {% else %}
+                        <span class="pagination-btn disabled">
+                            Selanjutnya <i class="fas fa-chevron-right"></i>
+                        </span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="pagination-info">
+                        Menampilkan {{ stories.items|length }} dari {{ stories.total }} hasil 
+                        (Halaman {{ stories.page }} dari {{ stories.pages }})
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-search"></i>
+                <h3>Tidak ada hasil ditemukan</h3>
+                <p>Coba dengan kata kunci yang berbeda atau lebih spesifik</p>
+                <div class="search-suggestions">
+                    <p>Tips pencarian:</p>
+                    <ul>
+                        <li>Gunakan kata kunci yang lebih umum</li>
+                        <li>Cek ejaan kata kunci</li>
+                        <li>Gunakan bahasa Indonesia yang baik</li>
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="search-guide">
+            <div class="guide-content">
+                <i class="fas fa-search fa-3x"></i>
+                <h2>Cari Curhatan yang Menarik</h2>
+                <p>Gunakan kolom pencarian di atas untuk menemukan curhatan berdasarkan kata kunci</p>
+                <div class="popular-searches">
+                    <h3>Pencarian Populer:</h3>
+                    <div class="popular-tags">
+                        <a href="{{ url_for('search_stories', q='bahagia') }}" class="tag">bahagia</a>
+                        <a href="{{ url_for('search_stories', q='sedih') }}" class="tag">sedih</a>
+                        <a href="{{ url_for('search_stories', q='keluarga') }}" class="tag">keluarga</a>
+                        <a href="{{ url_for('search_stories', q='cinta') }}" class="tag">cinta</a>
+                        <a href="{{ url_for('search_stories', q='kerja') }}" class="tag">kerja</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

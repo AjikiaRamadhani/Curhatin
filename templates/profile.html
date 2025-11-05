@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="profile-header">
+        <div class="profile-avatar">
+            <i class="fas fa-user-circle"></i>
+        </div>
+        <div class="profile-info">
+            <h1>{{ current_user.username }}</h1>
+            <p class="profile-email">{{ current_user.email }}</p>
+            <p class="profile-join-date">Bergabung sejak {{ current_user.created_at.strftime('%B %Y') }}</p>
+        </div>
+    </div>
+
+    <div class="profile-stats">
+        <div class="stat-card">
+            <div class="stat-number">{{ user_stories }}</div>
+            <div class="stat-label">Curhatan</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ user_likes }}</div>
+            <div class="stat-label">Suka Diterima</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ user_comments }}</div>
+            <div class="stat-label">Komentar</div>
+        </div>
+    </div>
+
+    <div class="profile-content">
+        <!-- Di bagian recent stories profile -->
+        <div class="recent-stories">
+            <h2>Curhatan Terbaru Anda</h2>
+            {% if recent_stories %}
+            <div class="stories-grid">
+                {% for story in recent_stories %}
+                <div class="story-card compact">
+                    <div class="story-header">
+                        <span class="story-time">{{ story.created_at.strftime('%d %b %Y') }}</span>
+                        {% if story.is_anonymous %}
+                        <span class="anonymous-badge">Anonymous</span>
+                        {% endif %}
+                    </div>
+                    <div class="story-content compact">
+                        {{ story.content[:100] }}{% if story.content|length > 100 %}...{% endif %}
+                    </div>
+                    <div class="story-actions compact">
+                        <span class="action-item">
+                            <i class="fas fa-heart"></i> {{ story.likes|length }}
+                        </span>
+                        <span class="action-item">
+                            <i class="fas fa-comment"></i> {{ story.comments|length }}
+                        </span>
+                        <a href="{{ url_for('story_detail', story_id=story.id) }}" class="action-item">
+                            <i class="fas fa-eye"></i> Lihat
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Tambahkan link ke semua stories user jika mau -->
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="{{ url_for('index') }}?filter=user" class="btn btn-secondary">
+                    Lihat Semua Curhatan Saya
+                </a>
+            </div>
+            {% else %}
+            <!-- Existing empty state -->
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

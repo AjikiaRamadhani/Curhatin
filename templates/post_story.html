@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="post-container">
+        <div class="post-card">
+            <h2>Tulis Curhatan Baru</h2>
+            <form method="POST" action="{{ url_for('post_story') }}" enctype="multipart/form-data" id="story-form">
+                <div class="form-group">
+                    <label for="content">Ceritakan keluh kesahmu...</label>
+                    <textarea id="content" name="content" rows="8" placeholder="Tulis cerita atau keluh kesahmu di sini..." required></textarea>
+                    <div class="char-counter">
+                        <span id="char-count">0</span>/1000 karakter
+                    </div>
+                </div>
+                
+                <!-- Image Upload Section -->
+                <div class="form-group">
+                    <label for="image">Upload Gambar (Opsional)</label>
+                    <div class="image-upload-container">
+                        <input type="file" id="image" name="image" accept="image/*" class="image-input">
+                        <label for="image" class="image-upload-btn">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            Pilih Gambar
+                        </label>
+                        <div class="image-preview" id="image-preview"></div>
+                    </div>
+                    <small class="form-text">Format: JPG, PNG, GIF (Max: 5MB)</small>
+                </div>
+                
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="is_anonymous" name="is_anonymous">
+                    <label for="is_anonymous">Posting sebagai Anonymous</label>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Posting Curhatan</button>
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary">Batal</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Character counter
+const contentTextarea = document.getElementById('content');
+const charCount = document.getElementById('char-count');
+
+contentTextarea.addEventListener('input', function() {
+    const length = this.value.length;
+    charCount.textContent = length;
+    
+    if (length > 1000) {
+        charCount.style.color = 'var(--error-color)';
+    } else {
+        charCount.style.color = 'var(--text-secondary)';
+    }
+});
+
+// Image Preview Functionality
+document.getElementById('image').addEventListener('change', function(e) {
+    const preview = document.getElementById('image-preview');
+    const file = e.target.files[0];
+    
+    if (file) {
+        if (file.size > 5 * 1024 * 1024) { // 5MB limit
+            alert('Ukuran file terlalu besar! Maksimal 5MB.');
+            this.value = '';
+            preview.innerHTML = '';
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.innerHTML = `
+                <div class="preview-item">
+                    <img src="${e.target.result}" alt="Preview">
+                    <button type="button" class="remove-image" onclick="removeImage()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+        }
+        reader.readAsDataURL(file);
+    }
+});
+
+function removeImage() {
+    document.getElementById('image').value = '';
+    document.getElementById('image-preview').innerHTML = '';
+}
+
+// Form validation
+document.getElementById('story-form').addEventListener('submit', function(e) {
+    const content = document.getElementById('content').value;
+    
+    if (content.length > 1000) {
+        e.preventDefault();
+        alert('Konten terlalu panjang! Maksimal 1000 karakter.');
+        return;
+    }
+    
+    if (content.trim().length === 0) {
+        e.preventDefault();
+        alert('Konten tidak boleh kosong!');
+        return;
+    }
+});
+</script>
+{% endblock %}
