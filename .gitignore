@@ -1,0 +1,18 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+*.db
+*.sqlite3
+.env
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+static/uploads/  # Optional: jika tidak mau upload gambar di GitHub
