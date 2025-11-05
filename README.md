@@ -30,3 +30,12 @@ Aplikasi web full-stack untuk berbagi cerita, keluh kesah, dan pengalaman hidup 
    ```bash
    git clone https://github.com/username/curhatin.git
    cd curhatin
+2. Intall dependencies
+   ```bash
+   pip install -r requirements.txt
+3. Setup database dengan dummy data (optional)
+   ```bash
+   python create_dummy_data.py
+4. Run aplikasi
+   ```bash
+   python app.py
