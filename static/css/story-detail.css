@@ -1,0 +1,549 @@
+/* Story Detail Page */
+.story-detail {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Story Detail Card */
+.story-detail-card {
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    position: relative; /* Untuk positioning tombol kontrol */
+}
+
+/* Header Section */
+.story-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.header-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-color);
+    color: var(--primary-color);
+    font-size: 1.5rem;
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.author-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    margin-bottom: 2px;
+}
+
+.post-time {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.story-controls {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+}
+
+.control-buttons {
+    display: flex;
+    gap: 4px;
+    background: var(--bg-color);
+    padding: 4px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.control-btn {
+    background: none;
+    border: none;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+}
+
+.control-btn:hover {
+    background: var(--surface-color);
+}
+
+.edit-btn:hover {
+    color: var(--primary-color);
+}
+
+.delete-btn:hover {
+    color: var(--error-color);
+}
+
+.delete-form {
+    margin: 0;
+    padding: 0;
+}
+
+/* Content Section */
+.story-content {
+    padding: 0 20px 15px 20px;
+}
+
+.tweet-style-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.tweet-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+}
+
+.tweet-media {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: zoom-in;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    max-height: 510px; /* Twitter-style max height */
+    width: 100%;
+}
+
+.tweet-media img {
+    width: 100%;
+    height: auto;
+    max-height: 510px;
+    object-fit: contain;
+    vertical-align: middle;
+    background-color: var(--surface-color);
+}
+
+.media-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.media-overlay i {
+    color: white;
+    font-size: 1.5rem;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+.tweet-media:hover .media-overlay {
+    opacity: 1;
+}
+
+/* Responsive media sizes like Twitter */
+@media (max-width: 500px) {
+    .tweet-media {
+        margin: 0 -20px;
+        border-radius: 0;
+        border-left: 0;
+        border-right: 0;
+    }
+}
+
+/* Footer Section */
+.story-footer {
+    padding: 12px 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.interaction-stats {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.stat-item {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.stat-item i {
+    margin-right: 4px;
+}
+
+.interaction-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.interaction-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background: var(--surface-color);
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.interaction-btn:hover {
+    background: var(--border-color);
+    color: var(--text-primary);
+}
+
+.like-btn.liked {
+    color: var(--error-color);
+}
+
+.like-btn.liked i {
+    color: var(--error-color);
+}
+
+/* Comments Section */
+.comments-section {
+    margin-top: 24px;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.comments-section h3 {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    background: var(--surface-color);
+}
+
+.comment-form {
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.comment-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    resize: vertical;
+    min-height: 100px;
+    margin-bottom: 12px;
+    font-family: inherit;
+    background: var(--bg-color);
+}
+
+.comment-form textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.comments-list {
+    padding: 20px;
+}
+
+.comment {
+    padding: 16px;
+    background: var(--surface-color);
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.comment-author {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.comment-time {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.comment-content {
+    color: var(--text-primary);
+    line-height: 1.5;
+}
+
+.comment.reply {
+    margin-left: 40px;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+}
+
+.login-prompt {
+    padding: 20px;
+    text-align: center;
+    background: var(--surface-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.login-prompt a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.login-prompt a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .story-detail {
+        padding: 12px;
+    }
+
+    .story-header {
+        padding: 12px 16px;
+    }
+
+    .user-avatar {
+        width: 36px;
+        height: 36px;
+        font-size: 1.2rem;
+    }
+
+    .author-name {
+        font-size: 1rem;
+    }
+
+    .story-content {
+        padding: 16px;
+    }
+
+    .content-text {
+        font-size: 1rem;
+    }
+
+    .interaction-buttons {
+        flex-direction: column;
+    }
+
+    .comment.reply {
+        margin-left: 20px;
+    }
+}
+
+/* Comments Section */
+.comments-section {
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 30px;
+}
+
+.comments-section h3 {
+    margin-bottom: 24px;
+    color: var(--text-primary);
+    font-size: 1.25rem;
+}
+
+/* Comment Form */
+.comment-form {
+    background-color: var(--surface-color);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+}
+
+.comment-form textarea {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    resize: vertical;
+    min-height: 100px;
+    font-family: inherit;
+    margin-bottom: 15px;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+}
+
+.comment-form textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+}
+
+.comment-form button {
+    float: right;
+}
+
+/* Comments List */
+.comments-list {
+    margin-top: 20px;
+}
+
+/* Individual Comment */
+.comment {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.comment-author {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.comment-time {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.comment-content {
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+/* Nested Comments (Replies) */
+.comment.reply {
+    margin-left: 40px;
+    background-color: var(--bg-color);
+}
+
+/* Login Prompt */
+.login-prompt {
+    text-align: center;
+    padding: 24px;
+    background-color: var(--surface-color);
+    border-radius: 12px;
+    margin-bottom: 30px;
+}
+
+.login-prompt a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.login-prompt a:hover {
+    text-decoration: underline;
+}
+
+/* Empty Comments State */
+.empty-comments {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+/* Story Actions */
+.story-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.action-group {
+    display: flex;
+    gap: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .story-detail {
+        padding: 15px;
+    }
+
+    .story-detail .story-card {
+        padding: 20px;
+    }
+
+    .story-detail .story-image {
+        max-height: 300px;
+    }
+
+    .story-detail .story-image img {
+        max-height: 300px;
+    }
+
+    .comments-section {
+        padding: 20px;
+    }
+
+    .comment.reply {
+        margin-left: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .story-detail .story-card {
+        padding: 15px;
+    }
+
+    .comments-section {
+        padding: 15px;
+    }
+
+    .comment {
+        padding: 15px;
+    }
+
+    .comment.reply {
+        margin-left: 10px;
+    }
+
+    .action-group {
+        gap: 15px;
+    }
+}
