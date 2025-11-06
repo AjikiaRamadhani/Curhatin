@@ -30,7 +30,7 @@
             <h2>Curhatan Terbaru</h2>
             
             {% if stories and stories.items %}
-                <div class="stories-container-grid">
+                <div class="stories-grid">
                     {% for story in stories.items %}
                         {% include 'components/story_card.html' %}
                     {% endfor %}
@@ -98,7 +98,7 @@
         <div class="stories-category" id="popular-stories">
             <h2>Curhatan Populer</h2>
             {% if popular_stories %}
-                <div class="stories-container-grid">
+                <div class="stories-grid">
                     {% for story in popular_stories %}
                         {% include 'components/story_card.html' %}
                     {% endfor %}

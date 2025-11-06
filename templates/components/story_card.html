@@ -3,35 +3,35 @@
      onclick="location.href='{{ url_for('story_detail', story_id=story.id) }}'"
      style="cursor: pointer;">
     
-    {% if story.image_url %}
-    <div class="story-image-side" onclick="event.stopPropagation(); openStoryImage('{{ story.id }}')" style="cursor: zoom-in;">
-        <img src="{{ url_for('static', filename=story.image_url) }}" 
-             alt="Story image" 
-             loading="lazy">
-        <div class="image-overlay">
-            <i class="fas fa-expand"></i>
+    <div class="story-header">
+        <div class="story-author">
+            {% if story.is_anonymous %}
+            <span class="author-name">Anonymous</span>
+            {% else %}
+            <span class="author-name">{{ story.author.username }}</span>
+            {% endif %}
+            <span class="story-time">{{ story.created_at.strftime('%d %b %Y %H:%M') }}</span>
         </div>
+        {% if current_user.is_authenticated and current_user.id == story.user_id %}
+        <form action="{{ url_for('delete_story', story_id=story.id) }}" method="POST" class="delete-form" onclick="event.stopPropagation()">
+            <button type="submit" class="btn-delete" onclick="return confirm('Hapus curhatan ini?')">
+                <i class="fas fa-trash"></i>
+            </button>
+        </form>
+        {% endif %}
     </div>
-    {% endif %}
     
     <div class="story-content-side">
-        <div class="story-header">
-            <div class="story-author">
-                {% if story.is_anonymous %}
-                <span class="author-name">Anonymous</span>
-                {% else %}
-                <span class="author-name">{{ story.author.username }}</span>
-                {% endif %}
-                <span class="story-time">{{ story.created_at.strftime('%d %b %Y %H:%M') }}</span>
+        {% if story.image_url %}
+        <div class="story-image-side" onclick="event.stopPropagation(); openStoryImage('{{ story.id }}')" style="cursor: zoom-in;">
+            <img src="{{ url_for('static', filename=story.image_url) }}" 
+                 alt="Story image" 
+                 loading="lazy">
+            <div class="image-overlay">
+                <i class="fas fa-expand"></i>
             </div>
-            {% if current_user.is_authenticated and current_user.id == story.user_id %}
-            <form action="{{ url_for('delete_story', story_id=story.id) }}" method="POST" class="delete-form" onclick="event.stopPropagation()">
-                <button type="submit" class="btn-delete" onclick="return confirm('Hapus curhatan ini?')">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </form>
-            {% endif %}
         </div>
+        {% endif %}
         
         <div class="story-text">
             {{ story.content }}
