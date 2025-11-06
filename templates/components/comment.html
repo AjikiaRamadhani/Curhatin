@@ -1,45 +1,48 @@
 <div class="comment" id="comment-{{ comment.id }}">
     <div class="comment-header">
-        <span class="comment-author">{{ comment.author.username }}</span>
-        <span class="comment-time" title="{{ comment.created_at.strftime('%d %B %Y %H:%M') }}">
-            {{ comment.created_at.strftime('%d %b %Y %H:%M') }}
-        </span>
+        <div class="comment-user-avatar">
+            {{ comment.author.username[0]|upper }}
+        </div>
+        <div class="comment-user-info">
+            <span class="comment-author">{{ comment.author.username }}</span>
+            <span class="comment-time" title="{{ comment.created_at.strftime('%d %B %Y %H:%M') }}">
+                {{ comment.created_at.strftime('%d %b %Y %H:%M') }}
+            </span>
+        </div>
         {% if current_user.is_authenticated and current_user.id == comment.user_id %}
         <form action="{{ url_for('delete_comment', comment_id=comment.id) }}" method="POST" class="delete-form">
-            <button type="submit" class="btn-delete" onclick="return confirm('Hapus komentar ini?')">
+            <button type="submit" class="comment-action-btn" onclick="return confirm('Hapus komentar ini?')">
                 <i class="fas fa-trash"></i>
             </button>
         </form>
         {% endif %}
     </div>
-    
-    <!-- ... rest of comment template ... -->
-</div>
-    
+
     <div class="comment-content">
         {{ comment.content }}
     </div>
-    
+
     <div class="comment-actions">
         {% if current_user.is_authenticated %}
-        <button class="btn-like-comment {% if comment.user_has_liked %}liked{% endif %}" 
+        <button class="comment-action-btn {% if comment.user_has_liked %}liked{% endif %}" 
                 data-comment-id="{{ comment.id }}"
                 onclick="likeComment({{ comment.id }}, this)">
             <i class="fas fa-heart"></i>
             <span class="like-count">{{ comment.likes|length }}</span>
         </button>
         
-        <button class="btn-reply" onclick="showReplyForm({{ comment.id }})">
-            <i class="fas fa-reply"></i> Balas
+        <button class="comment-action-btn" onclick="showReplyForm({{ comment.id }})">
+            <i class="fas fa-reply"></i>
+            <span>Balas</span>
         </button>
         {% else %}
-        <button class="btn-like-comment" onclick="window.location.href='{{ url_for('login') }}'">
+        <button class="comment-action-btn" onclick="window.location.href='{{ url_for('login') }}'">
             <i class="fas fa-heart"></i>
             <span class="like-count">{{ comment.likes|length }}</span>
         </button>
         {% endif %}
     </div>
-    
+
     <!-- Reply Form (Hidden by default) -->
     {% if current_user.is_authenticated %}
     <form class="reply-form" id="reply-form-{{ comment.id }}" style="display: none;" 
@@ -47,48 +50,53 @@
         <input type="hidden" name="parent_id" value="{{ comment.id }}">
         <textarea name="content" placeholder="Tulis balasan..." required></textarea>
         <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Kirim Balasan</button>
+            <button type="submit" class="btn btn-primary">Kirim</button>
             <button type="button" class="btn btn-secondary" onclick="hideReplyForm({{ comment.id }})">Batal</button>
         </div>
     </form>
     {% endif %}
-    
+
     <!-- Nested Replies -->
     <div class="replies">
         {% for reply in comment.replies %}
-            <div class="comment reply">
-                <div class="comment-header">
+        <div class="comment reply">
+            <div class="comment-header">
+                <div class="comment-user-avatar">
+                    {{ reply.author.username[0]|upper }}
+                </div>
+                <div class="comment-user-info">
                     <span class="comment-author">{{ reply.author.username }}</span>
                     <span class="comment-time">{{ reply.created_at.strftime('%d %b %Y %H:%M') }}</span>
-                    {% if current_user.is_authenticated and current_user.id == reply.user_id %}
-                    <form action="{{ url_for('delete_comment', comment_id=reply.id) }}" method="POST" class="delete-form">
-                        <button type="submit" class="btn-delete" onclick="return confirm('Hapus komentar ini?')">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </form>
-                    {% endif %}
                 </div>
-                
-                <div class="comment-content">
-                    {{ reply.content }}
-                </div>
-                
-                <div class="comment-actions">
-                    {% if current_user.is_authenticated %}
-                    <button class="btn-like-comment {% if reply.user_has_liked %}liked{% endif %}" 
-                            data-comment-id="{{ reply.id }}"
-                            onclick="likeComment({{ reply.id }}, this)">
-                        <i class="fas fa-heart"></i>
-                        <span class="like-count">{{ reply.likes|length }}</span>
+                {% if current_user.is_authenticated and current_user.id == reply.user_id %}
+                <form action="{{ url_for('delete_comment', comment_id=reply.id) }}" method="POST" class="delete-form">
+                    <button type="submit" class="comment-action-btn" onclick="return confirm('Hapus komentar ini?')">
+                        <i class="fas fa-trash"></i>
                     </button>
-                    {% else %}
-                    <button class="btn-like-comment" onclick="window.location.href='{{ url_for('login') }}'">
-                        <i class="fas fa-heart"></i>
-                        <span class="like-count">{{ reply.likes|length }}</span>
-                    </button>
-                    {% endif %}
-                </div>
+                </form>
+                {% endif %}
             </div>
+
+            <div class="comment-content">
+                {{ reply.content }}
+            </div>
+
+            <div class="comment-actions">
+                {% if current_user.is_authenticated %}
+                <button class="comment-action-btn {% if reply.user_has_liked %}liked{% endif %}" 
+                        data-comment-id="{{ reply.id }}"
+                        onclick="likeComment({{ reply.id }}, this)">
+                    <i class="fas fa-heart"></i>
+                    <span class="like-count">{{ reply.likes|length }}</span>
+                </button>
+                {% else %}
+                <button class="comment-action-btn" onclick="window.location.href='{{ url_for('login') }}'">
+                    <i class="fas fa-heart"></i>
+                    <span class="like-count">{{ reply.likes|length }}</span>
+                </button>
+                {% endif %}
+            </div>
+        </div>
         {% endfor %}
     </div>
 </div>
