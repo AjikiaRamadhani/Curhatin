@@ -5,10 +5,10 @@
     <div class="post-container">
         <div class="post-card">
             <h2>Tulis Curhatan Baru</h2>
-            <form method="POST" action="{{ url_for('post_story') }}" enctype="multipart/form-data" id="story-form">
+            <form method="POST" action="{{ url_for('edit_story', story_id=story.id) if story else url_for('post_story') }}" enctype="multipart/form-data" id="story-form">
                 <div class="form-group">
                     <label for="content">Ceritakan keluh kesahmu...</label>
-                    <textarea id="content" name="content" rows="8" placeholder="Tulis cerita atau keluh kesahmu di sini..." required></textarea>
+                    <textarea id="content" name="content" rows="8" placeholder="Tulis cerita atau keluh kesahmu di sini..." required>{{ story.content if story else '' }}</textarea>
                     <div class="char-counter">
                         <span id="char-count">0</span>/1000 karakter
                     </div>
@@ -23,18 +23,34 @@
                             <i class="fas fa-cloud-upload-alt"></i>
                             Pilih Gambar
                         </label>
-                        <div class="image-preview" id="image-preview"></div>
+                        <div class="image-preview" id="image-preview">
+                            {% if story and story.image_url %}
+                            <div class="preview-item">
+                                <img src="{{ url_for('static', filename=story.image_url) }}" alt="Preview">
+                                <button type="button" class="remove-image" onclick="toggleRemoveExistingImage()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            {% endif %}
+                        </div>
                     </div>
                     <small class="form-text">Format: JPG, PNG, GIF (Max: 5MB)</small>
                 </div>
                 
                 <div class="form-group checkbox-group">
-                    <input type="checkbox" id="is_anonymous" name="is_anonymous">
+                    <input type="checkbox" id="is_anonymous" name="is_anonymous" {% if story and story.is_anonymous %}checked{% endif %}>
                     <label for="is_anonymous">Posting sebagai Anonymous</label>
                 </div>
+
+                {% if story and story.image_url %}
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="remove_image" name="remove_image">
+                    <label for="remove_image">Hapus gambar yang ada</label>
+                </div>
+                {% endif %}
                 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Posting Curhatan</button>
+                    <button type="submit" class="btn btn-primary">{% if story %}Simpan Perubahan{% else %}Posting Curhatan{% endif %}</button>
                     <a href="{{ url_for('index') }}" class="btn btn-secondary">Batal</a>
                 </div>
             </form>
@@ -91,6 +107,30 @@ function removeImage() {
     document.getElementById('image-preview').innerHTML = '';
 }
 
+function toggleRemoveExistingImage() {
+    const removeCheckbox = document.getElementById('remove_image');
+    if (removeCheckbox) {
+        removeCheckbox.checked = !removeCheckbox.checked;
+        // Visual feedback: if checked, hide existing preview
+        const preview = document.getElementById('image-preview');
+        if (removeCheckbox.checked) {
+            preview.innerHTML = '';
+        } else {
+            // reload the existing image preview from server
+            {% if story and story.image_url %}
+            preview.innerHTML = `
+                <div class="preview-item">
+                    <img src="{{ url_for('static', filename=story.image_url) }}" alt="Preview">
+                    <button type="button" class="remove-image" onclick="toggleRemoveExistingImage()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            {% endif %}
+        }
+    }
+}
+
 // Form validation
 document.getElementById('story-form').addEventListener('submit', function(e) {
     const content = document.getElementById('content').value;
@@ -105,6 +145,14 @@ document.getElementById('story-form').addEventListener('submit', function(e) {
         e.preventDefault();
         alert('Konten tidak boleh kosong!');
         return;
+    }
+});
+// Initialize character counter based on textarea value (useful for edit)
+document.addEventListener('DOMContentLoaded', function() {
+    const contentEl = document.getElementById('content');
+    const charCountEl = document.getElementById('char-count');
+    if (contentEl && charCountEl) {
+        charCountEl.textContent = contentEl.value.length;
     }
 });
 </script>

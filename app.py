@@ -349,6 +349,68 @@ def delete_story(story_id):
     flash('Curhatan berhasil dihapus!', 'success')
     return redirect(url_for('index'))
 
+
+@app.route('/edit/<int:story_id>', methods=['GET', 'POST'])
+@login_required
+def edit_story(story_id):
+    story = Story.query.get_or_404(story_id)
+
+    if story.user_id != current_user.id:
+        flash('Anda tidak memiliki akses untuk mengedit curhatan ini!', 'error')
+        return redirect(url_for('story_detail', story_id=story_id))
+
+    if request.method == 'POST':
+        content = request.form.get('content')
+        is_anonymous = 'is_anonymous' in request.form
+        remove_image = 'remove_image' in request.form
+        image_file = request.files.get('image')
+
+        if not content or content.strip() == '':
+            flash('Konten tidak boleh kosong!', 'error')
+            return render_template('post_story.html', story=story)
+
+        if len(content) > 1000:
+            flash('Konten terlalu panjang! Maksimal 1000 karakter.', 'error')
+            return render_template('post_story.html', story=story)
+
+        # Handle image upload or removal
+        if image_file and image_file.filename != '':
+            image_url = save_image(image_file)
+            if not image_url:
+                flash('Format gambar tidak didukung! Gunakan JPG, PNG, atau GIF.', 'error')
+                return render_template('post_story.html', story=story)
+
+            # Remove old image file if present
+            if story.image_url:
+                old_path = os.path.join(app.root_path, 'static', story.image_url)
+                try:
+                    if os.path.exists(old_path):
+                        os.remove(old_path)
+                except Exception:
+                    pass
+
+            story.image_url = image_url
+        else:
+            if remove_image:
+                if story.image_url:
+                    old_path = os.path.join(app.root_path, 'static', story.image_url)
+                    try:
+                        if os.path.exists(old_path):
+                            os.remove(old_path)
+                    except Exception:
+                        pass
+                story.image_url = None
+
+        story.content = content.strip()
+        story.is_anonymous = is_anonymous
+
+        db.session.commit()
+        flash('Curhatan berhasil diperbarui!', 'success')
+        return redirect(url_for('story_detail', story_id=story.id))
+
+    # GET
+    return render_template('post_story.html', story=story)
+
 @app.route('/delete_comment/<int:comment_id>', methods=['POST'])
 @login_required
 def delete_comment(comment_id):
