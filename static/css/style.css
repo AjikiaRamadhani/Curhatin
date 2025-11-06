@@ -1127,10 +1127,17 @@ body {
     z-index: 1000;
     padding: 8px 0;
     margin-top: 8px;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.2s ease-in-out;
+    pointer-events: none;
 }
 
-.nav-dropdown:hover .nav-dropdown-content {
+.nav-dropdown-content.show {
     display: block;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
 }
 
 .dropdown-link {
@@ -2084,7 +2091,6 @@ body {
     
     /* Text truncation for 3 lines */
     display: -webkit-box;
-    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }

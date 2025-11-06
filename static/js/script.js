@@ -23,31 +23,22 @@ if (themeToggle) {
     }
 }
 
-// Dropdown functionality - FIXED VERSION
+// Dropdown functionality - IMPROVED VERSION
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🔧 JavaScript loaded - setting up dropdowns');
-    
     const dropdowns = document.querySelectorAll('.nav-dropdown');
+    let activeDropdown = null;
     
     // Close dropdowns when clicking outside
     document.addEventListener('click', function(e) {
-        console.log('📝 Document clicked');
-        let clickedInsideDropdown = false;
-        
-        dropdowns.forEach(dropdown => {
-            if (dropdown.contains(e.target)) {
-                clickedInsideDropdown = true;
-            }
-        });
-        
-        if (!clickedInsideDropdown) {
-            console.log('🚪 Closing all dropdowns');
-            dropdowns.forEach(dropdown => {
-                const dropdownContent = dropdown.querySelector('.nav-dropdown-content');
-                if (dropdownContent) {
-                    dropdownContent.classList.remove('show');
-                }
-            });
+        if (!e.target.closest('.nav-dropdown')) {
+            closeAllDropdowns();
+        }
+    });
+
+    // Close dropdowns when pressing Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeAllDropdowns();
         }
     });
 
@@ -57,26 +48,24 @@ document.addEventListener('DOMContentLoaded', function() {
         const content = dropdown.querySelector('.nav-dropdown-content');
         
         if (button && content) {
-            console.log('🎯 Setting up dropdown button');
-            
             button.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('🔼 Dropdown button clicked');
                 
-                // Close all other dropdowns
-                dropdowns.forEach(otherDropdown => {
-                    if (otherDropdown !== dropdown) {
-                        const otherContent = otherDropdown.querySelector('.nav-dropdown-content');
-                        if (otherContent) {
-                            otherContent.classList.remove('show');
-                        }
+                // If clicking the same dropdown that's already open, close it
+                if (content.classList.contains('show')) {
+                    closeDropdown(content);
+                    activeDropdown = null;
+                } else {
+                    // Close any other open dropdown
+                    if (activeDropdown) {
+                        closeDropdown(activeDropdown);
                     }
-                });
-                
-                // Toggle current dropdown
-                content.classList.toggle('show');
-                console.log('📋 Dropdown visibility:', content.classList.contains('show'));
+                    
+                    // Open this dropdown
+                    openDropdown(content);
+                    activeDropdown = content;
+                }
             });
             
             // Prevent dropdown content clicks from closing dropdown
@@ -85,6 +74,34 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
+
+    function openDropdown(content) {
+        // Reset transition properties
+        content.style.display = 'block';
+        // Trigger reflow
+        content.offsetHeight;
+        content.classList.add('show');
+    }
+
+    function closeDropdown(content) {
+        content.classList.remove('show');
+        // Remove display:block after transition
+        setTimeout(() => {
+            if (!content.classList.contains('show')) {
+                content.style.display = 'none';
+            }
+        }, 200); // Match this with your CSS transition time
+    }
+
+    function closeAllDropdowns() {
+        dropdowns.forEach(dropdown => {
+            const content = dropdown.querySelector('.nav-dropdown-content');
+            if (content && content.classList.contains('show')) {
+                closeDropdown(content);
+            }
+        });
+        activeDropdown = null;
+    }
     
     // Category Tabs Functionality
     const categoryTabs = document.querySelectorAll('.category-tab');
