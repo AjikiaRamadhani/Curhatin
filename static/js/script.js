@@ -150,16 +150,31 @@ function likeStory(storyId, button) {
         return response.json();
     })
     .then(data => {
+        // Update button state
         if (data.liked) {
             button.classList.add('liked');
-            button.querySelector('.fa-heart').classList.add('fas');
-            button.querySelector('.fa-heart').classList.remove('far');
         } else {
             button.classList.remove('liked');
-            button.querySelector('.fa-heart').classList.remove('fas');
-            button.querySelector('.fa-heart').classList.add('far');
         }
-        button.querySelector('.like-count').textContent = data.like_count;
+
+        // Update like counts in all relevant places
+        const story = document.getElementById(`story-${storyId}`);
+        if (story) {
+            // Update in story detail view
+            const stats = story.querySelector('.interaction-stats');
+            if (stats) {
+                const likeStats = stats.querySelector('.stat-item');
+                if (likeStats) {
+                    likeStats.innerHTML = `<i class="fas fa-heart"></i> ${data.like_count}`;
+                }
+            }
+
+            // Update in grid/list view
+            const likeCount = button.querySelector('.like-count');
+            if (likeCount) {
+                likeCount.textContent = data.like_count;
+            }
+        }
     })
     .catch(error => {
         console.error('Error:', error);
